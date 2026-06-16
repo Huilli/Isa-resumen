@@ -83,6 +83,7 @@
   .cert-pill.vigencia { background: var(--blue-light); color: var(--blue-dark); }
   .cert-pill.acceso-libre { background: var(--green-light); color: #0e6b4a; }
   .cert-pill.acceso-req { background: var(--orange-light); color: #7a4f00; }
+  .cert-pill.acceso-info { background: #e8f0fb; color: #1a3a6e; }
 
   /* HINT */
   .hint-bar { background: var(--blue-light); border: 1px solid #c3d7f5; border-radius: var(--radius-md); padding: 14px 18px; font-size: 13px; color: var(--blue-mid); margin-bottom: 28px; display: flex; align-items: center; gap: 10px; }
@@ -186,7 +187,9 @@ const CERTS = [
   { id:"il", short:"Inst. Lifesaver", name:"Instructor para Lifesaver", vigencia:null, acceso:"req", accesoLabel:"Abierto a todos", modules:["mc1","mc2","mc3","mc4","mc5","e1","e2","e3","e4","e5","eval-isvb","sad-m1","sad-m2"] },
   { id:"isad", short:"ISAD", name:"Instructor de Salvamento Acuático Deportivo", vigencia:null, acceso:"req", accesoLabel:"Abierto a todos", modules:["sad-m1","sad-m2","sad-m3","presencial"] },
   { id:"surf", short:"Surf Lifeguard Instructor", name:"Surf Lifeguard Instructor", vigencia:null, acceso:"req", accesoLabel:"Solo guardavidas titulados", modules:["mc1","mc2","mc3","mc4","mc5","e1","e2","e3","e4","e5","eval-isvb","p1","p2","p3","p4","p5","eval-ipa","sad-m1","sad-m2","sad-m3","presencial"] }
+{ id:"lifesaver", short:"Lifesaver ILS", name:"Programa Lifesaver — acceso al bloque SAD", vigencia:null, acceso:"libre", accesoLabel:"Para quienes no tienen título de guardavidas", modules:[] },
 ];
+
 
 const BLOCKS = [
   { id:"comun", label:"Tramo común", color:"#0d2d5e", modules:[
@@ -231,7 +234,7 @@ function buildCerts() {
     const card = document.createElement("div");
     card.className = "cert-card";
     card.id = "cert-" + c.id;
-    const accesoClass = c.acceso === "libre" ? "acceso-libre" : "acceso-req";
+    const accesoClass = c.id === "lifesaver" ? "acceso-info" : c.acceso === "libre" ? "acceso-libre" : "acceso-req";
     const vigBadge = c.vigencia ? `<span class="cert-pill vigencia">Vigencia ${c.vigencia}</span>` : "";
     card.innerHTML = `
       <div class="cert-short">${c.short}</div>
@@ -240,7 +243,12 @@ function buildCerts() {
         ${vigBadge}
         <span class="cert-pill ${accesoClass}">${c.accesoLabel}</span>
       </div>`;
-    card.addEventListener("click", () => toggleCert(c));
+    if (c.id !== "lifesaver") {
+  if (c.id !== "lifesaver") {
+      card.addEventListener("click", () => toggleCert(c));
+    } else {
+      card.style.cursor = "default";
+    }
     grid.appendChild(card);
   });
 }
