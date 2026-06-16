@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ISA — Instructorado de Salvamento Acuático | EPSA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --blue-dark: #0d2d5e;
+    --blue-mid: #2B6CB0;
+    --blue-light: #e8f0fb;
+    --red: #C0181A;
+    --red-light: #fdf0f0;
+    --orange: #e8a020;
+    --orange-light: #fef6e8;
+    --green: #1D9E75;
+    --green-light: #e8f7f2;
+    --gray-100: #f5f6f8;
+    --gray-200: #e8eaed;
+    --gray-400: #9aa0ad;
+    --gray-700: #3d4451;
+    --gray-900: #1a1d23;
+    --white: #ffffff;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.07);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; background: var(--gray-100); color: var(--gray-900); font-size: 15px; line-height: 1.6; }
+
+  /* HERO */
+  .hero { background: var(--blue-dark); color: white; position: relative; overflow: hidden; }
+  .hero::before { content:''; position:absolute; top:-60px; right:-80px; width:420px; height:420px; border-radius:50%; background:rgba(192,24,26,0.12); pointer-events:none; }
+  .hero::after { content:''; position:absolute; bottom:-40px; left:30%; width:280px; height:280px; border-radius:50%; background:rgba(43,108,176,0.15); pointer-events:none; }
+  .hero-inner { max-width: 900px; margin: 0 auto; padding: 52px 32px 48px; position: relative; z-index: 1; }
+  .hero-logo { height: 52px; width: auto; margin-bottom: 32px; display: block; }
+  .hero-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--orange); margin-bottom: 14px; }
+  .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(32px, 5vw, 52px); font-weight: 700; line-height: 1.12; color: white; margin-bottom: 16px; max-width: 640px; }
+  .hero-subtitle { font-size: 16px; font-weight: 300; color: rgba(255,255,255,0.72); max-width: 520px; line-height: 1.7; margin-bottom: 36px; }
+  .hero-stats { display: flex; gap: 32px; flex-wrap: wrap; padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.1); }
+  .hero-stat-num { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; color: white; line-height: 1; }
+  .hero-stat-label { font-size: 12px; color: rgba(255,255,255,0.55); margin-top: 4px; }
+
+  /* LAYOUT */
+  .page-body { max-width: 900px; margin: 0 auto; padding: 48px 32px 80px; }
+  .section-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--red); margin-bottom: 8px; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: var(--blue-dark); margin-bottom: 6px; }
+  .section-sub { font-size: 14px; color: var(--gray-400); margin-bottom: 28px; }
+
+  /* CERTS */
+  .certs-section { margin-bottom: 56px; }
+  .certs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+  .cert-card {
+    background: var(--white);
+    border: 1.5px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    padding: 16px 18px;
+    cursor: pointer;
+    transition: border-color 0.18s, box-shadow 0.18s, transform 0.12s;
+    position: relative;
+    user-select: none;
+  }
+  .cert-card:hover { border-color: var(--blue-mid); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+  .cert-card.active { border-color: var(--red); border-width: 2px; box-shadow: 0 0 0 3px rgba(192,24,26,0.1); }
+  .cert-card.active::after {
+    content: '✓';
+    position: absolute; top: 10px; right: 12px;
+    width: 20px; height: 20px;
+    background: var(--red); color: white;
+    border-radius: 50%; font-size: 11px;
+    display: flex; align-items: center; justify-content: center;
+    line-height: 20px; text-align: center;
+  }
+  .cert-short { font-size: 11px; font-weight: 600; color: var(--blue-mid); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 4px; }
+  .cert-name { font-size: 13px; font-weight: 500; color: var(--gray-900); line-height: 1.4; margin-bottom: 10px; }
+  .cert-pill { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; padding: 3px 8px; border-radius: 20px; width: fit-content; margin-top: 3px; }
+  .cert-pill.vigencia { background: var(--blue-light); color: var(--blue-dark); }
+  .cert-pill.acceso-libre { background: var(--green-light); color: #0e6b4a; }
+  .cert-pill.acceso-req { background: var(--orange-light); color: #7a4f00; }
+
+  /* HINT */
+  .hint-bar { background: var(--blue-light); border: 1px solid #c3d7f5; border-radius: var(--radius-md); padding: 14px 18px; font-size: 13px; color: var(--blue-mid); margin-bottom: 28px; display: flex; align-items: center; gap: 10px; }
+  .hint-bar.hidden { display: none; }
+  .access-note { background: var(--orange-light); border-left: 3px solid var(--orange); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 12px 16px; font-size: 13px; color: #7a4f00; margin-bottom: 28px; display: none; }
+  .access-note.visible { display: block; }
+  .legend { display: none; align-items: center; gap: 20px; margin-bottom: 24px; flex-wrap: wrap; }
+  .legend.visible { display: flex; }
+  .legend-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--gray-700); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+  /* BLOCKS */
+  .block-group { margin-bottom: 40px; }
+  .block-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px solid var(--gray-200); }
+  .block-stripe { width: 4px; height: 22px; border-radius: 2px; flex-shrink: 0; }
+  .block-name { font-size: 13px; font-weight: 600; color: var(--gray-700); text-transform: uppercase; letter-spacing: 0.07em; }
+  .block-count { margin-left: auto; font-size: 11px; color: var(--gray-400); }
+
+  .modules-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+
+  .mod-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    transition: opacity 0.25s, border-color 0.2s, box-shadow 0.2s;
+    opacity: 0.38;
+  }
+  .mod-card.no-filter { opacity: 1; }
+  .mod-card.active-state { opacity: 1; border-left: 3px solid var(--red); padding-left: 14px; box-shadow: var(--shadow-sm); }
+  .mod-card.dim { opacity: 0.28; }
+
+  .mod-name { font-size: 13px; font-weight: 500; color: var(--gray-900); margin-bottom: 5px; line-height: 1.4; }
+  .mod-desc { font-size: 12px; color: var(--gray-400); line-height: 1.5; }
+
+  /* FOOTER */
+  .footer { text-align: center; padding: 24px 32px; font-size: 12px; color: var(--gray-400); border-top: 1px solid var(--gray-200); max-width: 900px; margin: 0 auto; }
+
+  @media (max-width: 600px) {
+    .hero-inner { padding: 36px 20px 36px; }
+    .page-body { padding: 32px 20px 60px; }
+    .hero-stats { gap: 20px; }
+    .certs-grid { grid-template-columns: 1fr 1fr; }
+    .modules-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <img src="https://i.ibb.co/VpmRQ0QJ/EPSA-Logo-Certificado-01.png" alt="EPSA" class="hero-logo">
+    <p class="hero-eyebrow">Formación de instructores</p>
+    <h1 class="hero-title">Instructorado de Salvamento Acuático</h1>
+    <p class="hero-subtitle">Formá instructores certificados en RCP, primeros auxilios y salvamento acuático deportivo. Virtual, modular y avalado internacionalmente.</p>
+    <div class="hero-stats">
+      <div><div class="hero-stat-num">7</div><div class="hero-stat-label">Certificaciones</div></div>
+      <div><div class="hero-stat-num">100%</div><div class="hero-stat-label">Virtual + presencial optativo</div></div>
+      <div><div class="hero-stat-num">EPSA / ILS</div><div class="hero-stat-label">Aval institucional</div></div>
+    </div>
+  </div>
+</header>
+
+<main class="page-body">
+
+  <section class="certs-section">
+    <p class="section-eyebrow">Certificaciones</p>
+    <h2 class="section-title">¿Qué querés certificar?</h2>
+    <p class="section-sub">Tocá una certificación para ver qué módulos necesitás.</p>
+    <div class="certs-grid" id="certs-grid"></div>
+  </section>
+
+  <section>
+    <p class="section-eyebrow">Contenidos</p>
+    <h2 class="section-title">Recorrido de módulos</h2>
+
+    <div class="hint-bar" id="hint-bar">
+      <span>☝️</span>
+      <span>Seleccioná una certificación para ver tu camino.</span>
+    </div>
+    <div class="access-note" id="access-note"></div>
+    <div class="legend" id="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--red);"></div> Incluido en la certificación seleccionada</div>
+    </div>
+
+    <div id="blocks-area"></div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <p>© 2026 EPSA — Escuela de Guardavidas AIGUV</p>
+</footer>
+
+<script>
+const CERTS = [
+  { id:"isvb", short:"ISVB", name:"Instructor de RCP y DEA", vigencia:"2 años", acceso:"libre", accesoLabel:"Abierto a todos", modules:["mc1","mc2","mc3","mc4","mc5","e1","e2","e3","e4","e5","eval-isvb"] },
+  { id:"ipa", short:"IPA", name:"Instructor de Primeros Auxilios", vigencia:"2 años", acceso:"libre", accesoLabel:"Abierto a todos", modules:["mc1","mc2","mc3","mc4","mc5","p1","p2","p3","p4","p5","eval-ipa"] },
+  { id:"oa", short:"Oficial Auxiliar SAD", name:"Oficial Auxiliar SAD — CASADRA", vigencia:null, acceso:"req", accesoLabel:"Requiere guardavidas o Lifesaver", modules:["sad-m1","sad-m2","arb-sad"] },
+  { id:"ij", short:"Inst. Junior", name:"Instructor para Guardavidas Junior", vigencia:null, acceso:"req", accesoLabel:"Requiere guardavidas o Lifesaver", modules:["mc1","mc2","mc3","mc4","mc5","e1","e2","e3","e4","e5","eval-isvb","sad-m1","sad-m3"] },
+  { id:"il", short:"Inst. Lifesaver", name:"Instructor para Lifesaver", vigencia:null, acceso:"req", accesoLabel:"Requiere guardavidas o Lifesaver", modules:["mc1","mc2","mc3","mc4","mc5","e1","e2","e3","e4","e5","eval-isvb","sad-m1","sad-m2"] },
+  { id:"isad", short:"ISAD", name:"Instructor de Salvamento Acuático Deportivo", vigencia:null, acceso:"req", accesoLabel:"Requiere guardavidas o Lifesaver", modules:["sad-m1","sad-m2","sad-m3","presencial"] },
+  { id:"surf", short:"Surf Lifeguard Instructor", name:"Surf Lifeguard Instructor", vigencia:null, acceso:"req", accesoLabel:"Solo guardavidas titulados", modules:["mc1","mc2","mc3","mc4","mc5","e1","e2","e3","e4","e5","eval-isvb","p1","p2","p3","p4","p5","eval-ipa","sad-m1","sad-m2","sad-m3","presencial"] }
+];
+
+const BLOCKS = [
+  { id:"comun", label:"Tramo común", color:"#0d2d5e", modules:[
+    { id:"mc1", name:"Marco legal y sistema de emergencias", desc:"El marco normativo argentino, roles en la cadena de emergencia y responsabilidades del instructor." },
+    { id:"mc2", name:"Evaluación inicial y seguridad en la escena", desc:"Cómo aproximarse a una emergencia, evaluar la situación y garantizar la seguridad." },
+    { id:"mc3", name:"Manejo básico de la vía aérea", desc:"Técnicas para mantener la vía aérea permeable en adultos, niños y lactantes." },
+    { id:"mc4", name:"Trauma, columna y movilización segura", desc:"Reconocimiento de trauma, inmovilización y traslado sin agravar lesiones." },
+    { id:"mc5", name:"Didáctica, diseño de cursos y negocio del instructor", desc:"Cómo diseñar y dictar cursos eficaces. Pedagogía aplicada y gestión profesional del instructor." },
+  ]},
+  { id:"isvb", label:"Bloque ISVB — RCP y DEA", color:"#C0181A", modules:[
+    { id:"e1", name:"RCP de alta calidad en adultos", desc:"Técnica, ritmo y calidad en la reanimación. Cómo enseñar a corregir los errores más frecuentes." },
+    { id:"e2", name:"Uso del DEA", desc:"Operación del desfibrilador externo automático, coordinación con RCP y situaciones especiales." },
+    { id:"e3", name:"RCP en niños y lactantes", desc:"Adaptaciones técnicas para pediátricos. Diferencias clave en profundidad, ritmo y ventilación." },
+    { id:"e4", name:"Reanimación del ahogado", desc:"Secuencia completa post-rescate acuático: apertura de vía aérea, ventilación inicial y RCP." },
+    { id:"e5", name:"Trabajo en equipo y simulaciones", desc:"Coordinación en emergencias reales, análisis de video y conducción de simulacros grupales." },
+    { id:"eval-isvb", name:"Evaluación práctica final", desc:"Microclase filmada dictando contenido real (10–15 min). Evaluada por EPSA con rúbrica estandarizada." },
+  ]},
+  { id:"ipa", label:"Bloque IPA — Primeros Auxilios", color:"#2B6CB0", modules:[
+    { id:"p1", name:"Hemorragias, heridas y lesiones musculoesqueléticas", desc:"Control de hemorragias y tratamiento de heridas. Fracturas, luxaciones y esguinces." },
+    { id:"p2", name:"Quemaduras y emergencias ambientales", desc:"Clasificación de quemaduras, golpe de calor, hipotermia y agentes físicos." },
+    { id:"p3", name:"Shock y emergencias cardiovasculares", desc:"Reconocimiento del shock e infarto. Signos de ACV para instructores no médicos." },
+    { id:"p4", name:"Emergencias neurológicas, metabólicas y obstétricas", desc:"Crisis convulsivas, hipoglucemia y situaciones obstétricas básicas en campo." },
+    { id:"p5", name:"Intoxicaciones, triage y transporte", desc:"Intoxicaciones frecuentes, triage básico y técnicas seguras de movilización." },
+    { id:"eval-ipa", name:"Evaluación práctica final", desc:"Microclase filmada dictando contenido real (10–15 min). Evaluada por EPSA con rúbrica estandarizada." },
+  ]},
+  { id:"sad", label:"Bloque SAD — Salvamento Acuático Deportivo", color:"#1D9E75", modules:[
+    { id:"sad-m1", name:"Seguridad acuática y prevención", desc:"Fundamentos de seguridad acuática, identificación de riesgos y legislación vigente." },
+    { id:"sad-m2", name:"Fundamentos del salvamento deportivo", desc:"Técnicas de rescate acuático deportivo, materiales reglamentarios y bases del reglamento." },
+    { id:"sad-m3", name:"Promoción y desarrollo del SAD", desc:"Cómo armar, gestionar y desarrollar programas y competencias de salvamento deportivo." },
+    { id:"presencial", name:"Encuentro presencial — noviembre", desc:"Una vez al año. Evaluación acuática, simulacro integrador de emergencia real y defensa del proyecto final." },
+  ]},
+  { id:"arbitraje", label:"Arbitraje SAD", color:"#e8a020", modules:[
+    { id:"arb-sad", name:"Arbitraje en salvamento acuático deportivo", desc:"Reglamento, criterios de evaluación y rol del árbitro en competencias nacionales e internacionales." },
+  ]}
+];
+
+let activeCert = null;
+
+function buildCerts() {
+  const grid = document.getElementById("certs-grid");
+  CERTS.forEach(c => {
+    const card = document.createElement("div");
+    card.className = "cert-card";
+    card.id = "cert-" + c.id;
+    const accesoClass = c.acceso === "libre" ? "acceso-libre" : "acceso-req";
+    const vigBadge = c.vigencia ? `<span class="cert-pill vigencia">Vigencia ${c.vigencia}</span>` : "";
+    card.innerHTML = `
+      <div class="cert-short">${c.short}</div>
+      <div class="cert-name">${c.name}</div>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        ${vigBadge}
+        <span class="cert-pill ${accesoClass}">${c.accesoLabel}</span>
+      </div>`;
+    card.addEventListener("click", () => toggleCert(c));
+    grid.appendChild(card);
+  });
+}
+
+function buildBlocks() {
+  const area = document.getElementById("blocks-area");
+  BLOCKS.forEach(block => {
+    const group = document.createElement("div");
+    group.className = "block-group";
+    group.innerHTML = `
+      <div class="block-header">
+        <div class="block-stripe" style="background:${block.color};"></div>
+        <span class="block-name">${block.label}</span>
+        <span class="block-count">${block.modules.length} módulo${block.modules.length !== 1 ? "s" : ""}</span>
+      </div>
+      <div class="modules-grid" id="grid-${block.id}"></div>`;
+    area.appendChild(group);
+    const grid = group.querySelector(".modules-grid");
+    block.modules.forEach(mod => {
+      const card = document.createElement("div");
+      card.className = "mod-card no-filter";
+      card.dataset.mid = mod.id;
+      card.innerHTML = `<div class="mod-name">${mod.name}</div><div class="mod-desc">${mod.desc}</div>`;
+      grid.appendChild(card);
+    });
+  });
+}
+
+function toggleCert(cert) {
+  const allCertCards = document.querySelectorAll(".cert-card");
+  const allModCards = document.querySelectorAll(".mod-card");
+  const hintBar = document.getElementById("hint-bar");
+  const legend = document.getElementById("legend");
+  const accessNote = document.getElementById("access-note");
+
+  if (activeCert && activeCert.id === cert.id) {
+    activeCert = null;
+    allCertCards.forEach(c => c.classList.remove("active"));
+    allModCards.forEach(c => { c.classList.remove("active-state","dim"); c.classList.add("no-filter"); });
+    hintBar.classList.remove("hidden");
+    legend.classList.remove("visible");
+    accessNote.classList.remove("visible");
+    return;
+  }
+
+  activeCert = cert;
+  allCertCards.forEach(c => c.classList.remove("active"));
+  document.getElementById("cert-" + cert.id).classList.add("active");
+
+  allModCards.forEach(card => {
+    const mid = card.dataset.mid;
+    card.classList.remove("no-filter","active-state","dim");
+    if (cert.modules.includes(mid)) {
+      card.classList.add("active-state");
+    } else {
+      card.classList.add("dim");
+    }
+  });
+
+  hintBar.classList.add("hidden");
+  legend.classList.add("visible");
+
+  if (cert.acceso !== "libre") {
+    accessNote.textContent = "⚠ " + cert.accesoLabel + ".";
+    accessNote.classList.add("visible");
+  } else {
+    accessNote.classList.remove("visible");
+  }
+}
+
+buildCerts();
+buildBlocks();
+</script>
+</body>
+</html>
