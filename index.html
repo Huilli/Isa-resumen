@@ -244,7 +244,6 @@ function buildCerts() {
         <span class="cert-pill ${accesoClass}">${c.accesoLabel}</span>
       </div>`;
     if (c.id !== "lifesaver") {
-  if (c.id !== "lifesaver") {
       card.addEventListener("click", () => toggleCert(c));
     } else {
       card.style.cursor = "default";
@@ -252,7 +251,6 @@ function buildCerts() {
     grid.appendChild(card);
   });
 }
-
 function buildBlocks() {
   const area = document.getElementById("blocks-area");
   BLOCKS.forEach(block => {
